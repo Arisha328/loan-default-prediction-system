@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Prediction Result — LoanAI{% endblock %}
+
+{% block content %}
+<div class="container section pt-4">
+  <span class="eyebrow">Prediction Result</span>
+  <h2 class="mt-2 mb-4">Applicant Risk Verdict</h2>
+
+  <div class="result-hero {{ 'high' if record.prediction_label == 'High Risk' else 'low' }} mb-4">
+    <div class="row align-items-center g-4">
+      <div class="col-md-5 text-center">
+        {% set gauge_probability = (record.probability * 100) | round(1) %}
+        {% set gauge_label = 'Default Probability' %}
+        {% include "partials/gauge.html" %}
+      </div>
+      <div class="col-md-7">
+        <span class="badge-risk {{ 'high' if record.prediction_label == 'High Risk' else 'low' }} mb-3">
+          <i class="fa-solid {{ 'fa-triangle-exclamation' if record.prediction_label == 'High Risk' else 'fa-shield-check' }}"></i>
+          {{ record.prediction_label }}
+        </span>
+        <h4 class="mb-2">Recommendation</h4>
+        <p class="text-muted-token mb-0">{{ record.recommendation }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card-signal p-4 mb-4">
+        <h6 class="mb-3"><i class="fa-solid fa-lightbulb me-2" style="color: var(--amber);"></i>Why this verdict?</h6>
+        {% for reason in reasons %}
+        <div class="reason-chip">
+          <i class="fa-solid fa-circle-dot" style="color: {{ 'var(--risk-red)' if record.prediction_label == 'High Risk' else 'var(--signal-blue)' }}; font-size:0.6rem;"></i>
+          {{ reason }}
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="card-signal p-4">
+        <h6 class="mb-3">Applicant Profile</h6>
+        <div class="row row-cols-2 row-cols-md-3 g-3 small">
+          <div><span class="text-muted-token d-block">Age</span>{{ record.age }}</div>
+          <div><span class="text-muted-token d-block">Income</span>{{ record.income | currency }}</div>
+          <div><span class="text-muted-token d-block">Credit Score</span>{{ record.credit_score }}</div>
+          <div><span class="text-muted-token d-block">Loan Amount</span>{{ record.loan_amount | currency }}</div>
+          <div><span class="text-muted-token d-block">Interest Rate</span>{{ record.interest_rate }}%</div>
+          <div><span class="text-muted-token d-block">Loan Term</span>{{ record.loan_term }} months</div>
+          <div><span class="text-muted-token d-block">DTI Ratio</span>{{ record.dti_ratio }}</div>
+          <div><span class="text-muted-token d-block">Months Employed</span>{{ record.months_employed }}</div>
+          <div><span class="text-muted-token d-block">Credit Lines</span>{{ record.num_credit_lines }}</div>
+          <div><span class="text-muted-token d-block">Education</span>{{ record.education }}</div>
+          <div><span class="text-muted-token d-block">Employment</span>{{ record.employment_type }}</div>
+          <div><span class="text-muted-token d-block">Marital Status</span>{{ record.marital_status }}</div>
+          <div><span class="text-muted-token d-block">Mortgage</span>{{ record.has_mortgage }}</div>
+          <div><span class="text-muted-token d-block">Dependents</span>{{ record.has_dependents }}</div>
+          <div><span class="text-muted-token d-block">Loan Purpose</span>{{ record.loan_purpose }}</div>
+          <div><span class="text-muted-token d-block">Co-Signer</span>{{ record.has_co_signer }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card-signal p-4">
+        <h6 class="mb-3">Export &amp; Actions</h6>
+        <div class="d-grid gap-2">
+          <a href="{{ url_for('main.export_result_pdf', prediction_id=record.id) }}" class="btn btn-outline-signal"><i class="fa-solid fa-file-pdf me-2"></i>Download PDF Report</a>
+          <a href="{{ url_for('main.predict') }}" class="btn btn-signal"><i class="fa-solid fa-plus me-2"></i>New Prediction</a>
+          <a href="{{ url_for('main.history') }}" class="btn btn-outline-signal"><i class="fa-solid fa-clock-rotate-left me-2"></i>View History</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

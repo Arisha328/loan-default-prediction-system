@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}FAQ — LoanAI{% endblock %}
+
+{% block content %}
+<div class="container section pt-4">
+  <span class="eyebrow">FAQ</span>
+  <h2 class="mt-2 mb-4">Frequently asked questions</h2>
+
+  <div class="accordion" id="faqAccordion">
+    {% set faqs = [
+      ("How accurate is the prediction model?", "The model is validated on a held-out 20% test split of the training data. Exact accuracy, precision, recall, and ROC-AUC figures are shown on the About page and are recomputed whenever the model is retrained."),
+      ("What data does LoanAI use to make a prediction?", "Sixteen applicant attributes: age, income, loan amount, credit score, months employed, number of credit lines, interest rate, loan term, DTI ratio, education, employment type, marital status, mortgage status, dependents, loan purpose, and co-signer status."),
+      ("Is my prediction history private?", "Yes. Each prediction is tied to your account and only visible to you and administrators. Passwords are hashed and never stored in plain text."),
+      ("Can I export my prediction results?", "Yes. Individual results can be exported as a PDF report, and your full history can be exported as a CSV file from the History page."),
+      ("How is the 'High Risk' vs 'Low Risk' cutoff decided?", "A predicted default probability of 50% or higher is classified as High Risk; below 50% is Low Risk. The exact probability is always shown alongside the label."),
+      ("Can the model be swapped for something more advanced?", "Yes. The pipeline is modular — the Logistic Regression model can be replaced with Random Forest, XGBoost, or any scikit-learn-compatible classifier by retraining with ml/train_model.py and updating the estimator.")
+    ] %}
+    {% for question, answer in faqs %}
+    <div class="card-signal mb-3 border-0">
+      <h2 class="accordion-header">
+        <button class="accordion-button {{ 'collapsed' if not loop.first }}" style="background: var(--bg-elevated); color: var(--text);" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ loop.index }}">
+          {{ question }}
+        </button>
+      </h2>
+      <div id="faq{{ loop.index }}" class="accordion-collapse collapse {{ 'show' if loop.first }}" data-bs-parent="#faqAccordion">
+        <div class="accordion-body text-muted-token">{{ answer }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

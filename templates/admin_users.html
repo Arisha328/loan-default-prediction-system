@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Manage Users — LoanAI{% endblock %}
+
+{% block content %}
+<div class="container section pt-4">
+  <span class="eyebrow"><i class="fa-solid fa-user-shield"></i> Admin</span>
+  <h2 class="mt-2 mb-4">Manage Users</h2>
+
+  <div class="card-signal p-4">
+    <div class="table-responsive">
+      <table class="table table-signal align-middle mb-0">
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Predictions</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                {% set u_avatar = u|avatar_url %}
+                {% if u_avatar %}
+                  <img src="{{ u_avatar }}" alt="{{ u.full_name }}" class="avatar-img" style="width:32px;height:32px;">
+                {% else %}
+                  <span class="avatar-fallback" style="width:32px;height:32px;font-size:0.7rem;">{{ u.initials }}</span>
+                {% endif %}
+                <span>{{ u.full_name }}</span>
+              </div>
+            </td>
+            <td>{{ u.email }}</td>
+            <td>{{ 'Admin' if u.is_admin else 'User' }}</td>
+            <td><span class="pill-status {{ 'low' if u.is_active_user else 'high' }}">{{ 'Active' if u.is_active_user else 'Inactive' }}</span></td>
+            <td>{{ u.created_at.strftime('%b %d, %Y') }}</td>
+            <td>{{ u.predictions.count() }}</td>
+            <td class="d-flex gap-2">
+              {% if not u.is_admin %}
+              <form method="POST" action="{{ url_for('admin.toggle_active', user_id=u.id) }}">
+                <button type="submit" class="btn btn-outline-signal btn-sm">{{ 'Deactivate' if u.is_active_user else 'Activate' }}</button>
+              </form>
+              <form method="POST" action="{{ url_for('admin.delete_user', user_id=u.id) }}" onsubmit="return confirm('Delete this user and all of their predictions? This cannot be undone.');">
+                <button type="submit" class="btn btn-danger-soft btn-sm">Delete</button>
+              </form>
+              {% else %}
+              <span class="small text-muted-token">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

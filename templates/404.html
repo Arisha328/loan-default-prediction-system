@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found — LoanAI{% endblock %}
+{% block content %}
+<div class="container section text-center py-5">
+  <div class="mono mb-3" style="font-size: 5rem; font-weight: 700; color: var(--signal-blue); opacity: 0.6;">404</div>
+  <h3 class="mb-2">This page doesn't exist</h3>
+  <p class="text-muted-token mb-4">The page you're looking for may have been moved or never existed.</p>
+  <a href="{{ url_for('main.index') }}" class="btn btn-signal">Back to Home</a>
+</div>
+{% endblock %}

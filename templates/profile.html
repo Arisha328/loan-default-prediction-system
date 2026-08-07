@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}My Profile — LoanAI{% endblock %}
+{% block meta_description %}<meta name="description" content="Manage your LoanAI account: update your name, upload a profile picture, and change your password.">{% endblock %}
+
+{% block content %}
+<div class="container section pt-4" style="max-width: 760px;">
+  <span class="eyebrow">Account</span>
+  <h2 class="mt-2 mb-4">My Profile</h2>
+
+  <!-- ==================== Avatar + name ==================== -->
+  <div class="card-signal p-4 p-md-5 mb-4">
+    <form method="POST" class="form-signal" enctype="multipart/form-data" novalidate>
+      {{ profile_form.hidden_tag() }}
+
+      <div class="text-center mb-4">
+        <div class="avatar-upload-wrap">
+          {% set avatar = current_user|avatar_url %}
+          {% if avatar %}
+            <img src="{{ avatar }}" alt="{{ current_user.full_name }}" class="avatar-img avatar-lg" id="avatarPreview">
+          {% else %}
+            <span class="avatar-fallback avatar-lg" id="avatarPreviewFallback">{{ current_user.initials }}</span>
+            <img src="" alt="" class="avatar-img avatar-lg d-none" id="avatarPreview">
+          {% endif %}
+          <label for="{{ profile_form.avatar.id }}" class="avatar-edit-btn" title="Change photo">
+            <i class="fa-solid fa-camera"></i>
+          </label>
+          {{ profile_form.avatar(id=profile_form.avatar.id, onchange="previewAvatar(this)") }}
+        </div>
+        <p class="text-muted-token small mt-2 mb-0">Click the camera icon to upload a new photo. PNG, JPG or WEBP, up to 4&nbsp;MB.</p>
+        {% for error in profile_form.avatar.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div class="mb-3">
+        {{ profile_form.full_name.label }}
+        {{ profile_form.full_name(class="form-control" + (" is-invalid" if profile_form.full_name.errors else "")) }}
+        {% for error in profile_form.full_name.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-control" value="{{ current_user.email }}" disabled>
+        <p class="text-muted-token small mt-1 mb-0">Your email is tied to your account and can't be changed here.</p>
+      </div>
+
+      {{ profile_form.submit(class="btn btn-signal") }}
+    </form>
+  </div>
+
+  <!-- ==================== Password ==================== -->
+  <div class="card-signal p-4 p-md-5">
+    <h5 class="mb-3"><i class="fa-solid fa-lock me-2" style="color: var(--signal-blue);"></i>Change Password</h5>
+    <form method="POST" class="form-signal" novalidate>
+      {{ password_form.hidden_tag() }}
+      <div class="mb-3">
+        {{ password_form.current_password.label }}
+        {{ password_form.current_password(class="form-control" + (" is-invalid" if password_form.current_password.errors else ""), placeholder="Your current password") }}
+        {% for error in password_form.current_password.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          {{ password_form.new_password.label }}
+          {{ password_form.new_password(class="form-control" + (" is-invalid" if password_form.new_password.errors else ""), placeholder="At least 8 characters") }}
+          {% for error in password_form.new_password.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          {{ password_form.confirm_password.label }}
+          {{ password_form.confirm_password(class="form-control" + (" is-invalid" if password_form.confirm_password.errors else ""), placeholder="Repeat new password") }}
+          {% for error in password_form.confirm_password.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        </div>
+      </div>
+      <div class="mt-4">
+        {{ password_form.submit_password(class="btn btn-outline-signal") }}
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function previewAvatar(input) {
+    if (!input.files || !input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.getElementById('avatarPreview');
+      const fallback = document.getElementById('avatarPreviewFallback');
+      img.src = e.target.result;
+      img.classList.remove('d-none');
+      if (fallback) fallback.classList.add('d-none');
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+</script>
+{% endblock %}

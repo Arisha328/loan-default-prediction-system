@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Login — LoanAI{% endblock %}
+
+{% block content %}
+<div class="container auth-shell">
+  <div class="card-signal auth-card animate-in">
+    <div class="text-center mb-4">
+      <span class="brand-mark d-inline-flex mb-2" style="width:48px;height:48px;border-radius:14px;"><i class="fa-solid fa-chart-line"></i></span>
+      <h3 class="mb-1">Welcome back</h3>
+      <p class="text-muted-token small">Log in to access your dashboard.</p>
+    </div>
+    <form method="POST" class="form-signal" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        {{ form.email.label }}
+        {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="you@example.com") }}
+        {% for error in form.email.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="mb-3">
+        {{ form.password.label }}
+        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="••••••••") }}
+        {% for error in form.password.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="form-check mb-4">
+        {{ form.remember(class="form-check-input") }}
+        {{ form.remember.label(class="form-check-label small") }}
+      </div>
+      {{ form.submit(class="btn btn-signal w-100") }}
+    </form>
+    <p class="text-center small text-muted-token mt-4 mb-0">
+      Don't have an account? <a href="{{ url_for('auth.register') }}" style="color: var(--signal-blue); font-weight:600;">Sign up</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

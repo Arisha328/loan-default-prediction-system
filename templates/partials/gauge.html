@@ -1,0 +1,21 @@
+{# Reusable risk gauge. Usage: {% include "partials/gauge.html" with context %}
+   Requires a variable `gauge_probability` (0-100) and `gauge_label` (string) in scope. #}
+<div class="gauge-wrap" data-gauge-probability="{{ gauge_probability }}">
+  <svg viewBox="0 0 320 190" xmlns="http://www.w3.org/2000/svg" width="100%">
+    <defs>
+      <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#1FAE7A"/>
+        <stop offset="50%" stop-color="#F2A93B"/>
+        <stop offset="100%" stop-color="#E5484D"/>
+      </linearGradient>
+    </defs>
+    <path d="M 20 160 A 140 140 0 0 1 300 160" fill="none" stroke="var(--border)" stroke-width="22" stroke-linecap="round"/>
+    <path d="M 20 160 A 140 140 0 0 1 300 160" fill="none" stroke="url(#gaugeGrad)" stroke-width="22" stroke-linecap="round" opacity="0.9"/>
+    <circle cx="160" cy="160" r="8" fill="var(--text)"/>
+    <line class="gauge-needle" x1="160" y1="160" x2="160" y2="48" stroke="var(--text)" stroke-width="5" stroke-linecap="round" transform="rotate(-90 160 160)"/>
+  </svg>
+  <div class="gauge-value">
+    <div class="num">{{ gauge_probability }}%</div>
+    <div class="label">{{ gauge_label|default('Default Probability') }}</div>
+  </div>
+</div>

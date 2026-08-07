@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Contact — LoanAI{% endblock %}
+
+{% block content %}
+<div class="container section pt-4">
+  <span class="eyebrow">Contact</span>
+  <h2 class="mt-2 mb-4">Get in touch</h2>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card-signal p-4 p-md-5">
+        <form method="POST" class="form-signal" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="row g-3">
+            <div class="col-md-6">
+              {{ form.name.label }}
+              {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="Your name") }}
+              {% for e in form.name.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="col-md-6">
+              {{ form.email.label }}
+              {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="you@example.com") }}
+              {% for e in form.email.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="col-12">
+              {{ form.subject.label }}
+              {{ form.subject(class="form-control" + (" is-invalid" if form.subject.errors else ""), placeholder="How can we help?") }}
+              {% for e in form.subject.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="col-12">
+              {{ form.message.label }}
+              {{ form.message(class="form-control" + (" is-invalid" if form.message.errors else ""), rows="5", placeholder="Tell us more...") }}
+              {% for e in form.message.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+            </div>
+          </div>
+          <div class="mt-4">
+            {{ form.submit(class="btn btn-signal px-4") }}
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="card-signal p-4 mb-3">
+        <h6 class="mb-3">Contact Details</h6>
+        <p class="small mb-2"><i class="fa-solid fa-envelope me-2" style="color: var(--signal-blue);"></i>{{ site_contact_email }}</p>
+        <p class="small mb-2"><i class="fa-solid fa-phone me-2" style="color: var(--signal-blue);"></i>+1 (555) 012-3456</p>
+        <p class="small mb-0"><i class="fa-solid fa-location-dot me-2" style="color: var(--signal-blue);"></i>500 Market Street, San Francisco, CA</p>
+      </div>
+      <div class="card-signal overflow-hidden" style="height: 220px;">
+        <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: var(--bg-elevated-2);">
+          <div class="text-center text-muted-token">
+            <i class="fa-solid fa-map-location-dot fa-2x mb-2"></i>
+            <p class="small mb-0">Map placeholder</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

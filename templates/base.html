@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ active_theme|default('light') }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}AI Loan Default Prediction System{% endblock %}</title>
+
+  {% block meta_description %}
+  <meta name="description" content="LoanAI scores loan applicants in real time with an explainable AI credit-risk model — instant default-risk predictions for lenders and financial teams.">
+  {% endblock %}
+  <meta name="keywords" content="loan default prediction, credit risk model, AI underwriting, loan risk assessment, machine learning lending">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="LoanAI">
+  <link rel="canonical" href="{{ request.url_root.rstrip('/') }}{{ request.path }}">
+
+  <!-- Open Graph / social preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LoanAI">
+  <meta property="og:title" content="{% block og_title %}AI Loan Default Prediction System{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}LoanAI scores loan applicants in real time with an explainable AI credit-risk model.{% endblock %}">
+  <meta property="og:url" content="{{ request.url_root.rstrip('/') }}{{ request.path }}">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{% block twitter_title %}AI Loan Default Prediction System{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}LoanAI scores loan applicants in real time with an explainable AI credit-risk model.{% endblock %}">
+
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <!-- Design system -->
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%233E6BFF%22/><text x=%2250%22 y=%2266%22 font-size=%2255%22 fill=%22white%22 text-anchor=%22middle%22 font-family=%22sans-serif%22>AI</text></svg>">
+  {% block extra_head %}{% endblock %}
+</head>
+<body data-authenticated="{{ 'true' if current_user.is_authenticated else 'false' }}">
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<nav class="navbar navbar-expand-lg navbar-signal">
+  <div class="container">
+    <a class="navbar-brand-signal" href="{{ url_for('main.index') }}">
+      <span class="brand-mark"><i class="fa-solid fa-chart-line"></i></span>
+      LoanAI
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+        {% if current_user.is_authenticated %}
+          {% if current_user.is_admin %}
+            <li class="nav-item"><a class="nav-link nav-link-signal" href="{{ url_for('admin.dashboard') }}"><i class="fa-solid fa-user-shield me-1"></i>Admin</a></li>
+          {% else %}
+            <li class="nav-item"><a class="nav-link nav-link-signal" href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link nav-link-signal" href="{{ url_for('main.predict') }}">Predict</a></li>
+            <li class="nav-item"><a class="nav-link nav-link-signal" href="{{ url_for('main.history') }}">History</a></li>
+          {% endif %}
+          <li class="nav-item"><a class="nav-link nav-link-signal" href="{{ url_for('main.about') }}">About</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-signal" href="{{ url_for('main.contact') }}">Contact</a></li>
+          <li class="nav-item dropdown ms-lg-2 user-menu">
+            <a class="d-flex align-items-center gap-2 user-menu-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {% set avatar = current_user|avatar_url %}
+              {% if avatar %}
+                <img src="{{ avatar }}" alt="{{ current_user.full_name }}" class="avatar-img avatar-sm">
+              {% else %}
+                <span class="avatar-fallback avatar-sm">{{ current_user.initials }}</span>
+              {% endif %}
+              <span class="d-none d-xl-inline small fw-semibold">{{ current_user.full_name.split(' ')[0] }}</span>
+              <i class="fa-solid fa-chevron-down small d-none d-lg-inline" style="font-size:0.65rem; opacity:0.6;"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-signal">
+              <li><a class="dropdown-item" href="{{ url_for('main.profile') }}"><i class="fa-solid fa-user me-2"></i>My Profile</a></li>
+              {% if current_user.is_admin %}
+                <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}"><i class="fa-solid fa-user-shield me-2"></i>Admin Panel</a></li>
+              {% else %}
+                <li><a class="dropdown-item" href="{{ url_for('main.dashboard') }}"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a></li>
+              {% endif %}
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout</a></li>
+            </ul>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link nav-link-signal" href="{{ url_for('main.about') }}">About</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-signal" href="{{ url_for('main.faq') }}">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-signal" href="{{ url_for('main.contact') }}">Contact</a></li>
+          <li class="nav-item ms-lg-2"><a class="nav-link nav-link-signal" href="{{ url_for('auth.login') }}">Login</a></li>
+          <li class="nav-item ms-lg-1"><a class="btn btn-signal btn-sm" href="{{ url_for('auth.register') }}">Get Started</a></li>
+        {% endif %}
+        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+          <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+  <div class="container mt-3">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'danger' else category }} alert-dismissible fade show rounded-3" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer-signal">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <h6 class="mb-3"><i class="fa-solid fa-chart-line me-2"></i>LoanAI</h6>
+        <p class="small">An AI-powered credit risk engine that helps lenders assess loan default probability in real time, with transparent, explainable predictions.</p>
+      </div>
+      <div class="col-lg-2 col-6">
+        <h6 class="mb-3">Product</h6>
+        <ul class="list-unstyled small d-flex flex-column gap-2">
+          <li><a href="{{ url_for('main.about') }}">About</a></li>
+          <li><a href="{{ url_for('main.faq') }}">FAQ</a></li>
+          <li><a href="{{ url_for('auth.register') }}">Get Started</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-6">
+        <h6 class="mb-3">Company</h6>
+        <ul class="list-unstyled small d-flex flex-column gap-2">
+          <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <h6 class="mb-3">Contact</h6>
+        <ul class="list-unstyled small d-flex flex-column gap-2">
+          <li><i class="fa-solid fa-envelope me-2"></i>{{ site_contact_email }}</li>
+          <li><i class="fa-solid fa-phone me-2"></i>+1 (555) 012-3456</li>
+          <li class="d-flex gap-3 mt-1 fs-5">
+            <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="#"><i class="fa-brands fa-github"></i></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom d-flex flex-wrap justify-content-between">
+      <span>&copy; {{ 2026 }} LoanAI. All rights reserved.</span>
+      <span>Built with Flask, Scikit-Learn &amp; Bootstrap 5.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

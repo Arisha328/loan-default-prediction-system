@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+.venv/
+venv/
+env/
+database/*.db
+instance/
+.DS_Store
+*.log
+.idea/
+.vscode/
+*.egg-info/
+build/
+dist/
+
+# Uploaded avatars (user content, not source)
+static/uploads/avatars/*
+!static/uploads/avatars/.gitkeep

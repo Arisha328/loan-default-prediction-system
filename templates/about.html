@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}About — LoanAI{% endblock %}
+
+{% block content %}
+<div class="container section pt-4">
+  <span class="eyebrow">About</span>
+  <h2 class="mt-2 mb-4">How LoanAI works</h2>
+
+  <div class="row g-4 mb-5">
+    <div class="col-lg-6">
+      <div class="card-signal p-4 h-100">
+        <h5 class="mb-3"><i class="fa-solid fa-database me-2" style="color: var(--signal-blue);"></i>The Dataset</h5>
+        <p class="text-muted-token">The model is trained on a historical loan-performance dataset with over 250,000 records. Each row describes an applicant &mdash; age, income, credit score, employment history, existing debt &mdash; along with whether that loan ultimately defaulted.</p>
+        <ul class="text-muted-token small mb-0">
+          <li>17 input features per applicant</li>
+          <li>Numeric fields: age, income, loan amount, credit score, months employed, credit lines, interest rate, loan term, DTI ratio</li>
+          <li>Categorical fields: education, employment type, marital status, mortgage, dependents, loan purpose, co-signer</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card-signal p-4 h-100">
+        <h5 class="mb-3"><i class="fa-solid fa-brain me-2" style="color: var(--signal-blue);"></i>The Model</h5>
+        <p class="text-muted-token mb-2">A class-balanced Logistic Regression classifier, chosen for its speed and interpretability &mdash; every coefficient maps directly to a feature, which is what powers the "Why this verdict?" explanations on each result page.</p>
+        {% if metrics %}
+        <div class="row row-cols-2 g-3 mt-2">
+          <div><span class="text-muted-token small d-block">Accuracy</span><span class="mono fw-bold">{{ metrics.accuracy }}%</span></div>
+          <div><span class="text-muted-token small d-block">ROC-AUC</span><span class="mono fw-bold">{{ metrics.roc_auc }}%</span></div>
+          <div><span class="text-muted-token small d-block">Precision</span><span class="mono fw-bold">{{ metrics.precision }}%</span></div>
+          <div><span class="text-muted-token small d-block">Recall</span><span class="mono fw-bold">{{ metrics.recall }}%</span></div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="card-signal p-4 mb-5">
+    <h5 class="mb-3"><i class="fa-solid fa-diagram-project me-2" style="color: var(--signal-blue);"></i>Workflow</h5>
+    <div class="row g-3">
+      {% for idx, title in [("01","Load & Clean"), ("02","Encode Categories"), ("03","Scale Features"), ("04","Train Model"), ("05","Serve Predictions")] %}
+      <div class="col">
+        <div class="step-card">
+          <span class="step-index">{{ idx }}</span>
+          <h6 class="mt-2 mb-0">{{ title }}</h6>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card-signal p-4">
+    <h5 class="mb-3"><i class="fa-solid fa-code me-2" style="color: var(--signal-blue);"></i>Developer Information</h5>
+    <p class="text-muted-token mb-0">This project was built as a full-stack demonstration of an end-to-end machine learning product: data preprocessing, model training, a Flask REST API, authentication, an admin console, and a polished, responsive front end &mdash; all wired to a real trained model rather than mocked data.</p>
+  </div>
+</div>
+{% endblock %}

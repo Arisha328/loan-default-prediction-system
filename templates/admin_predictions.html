@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Manage Predictions — LoanAI{% endblock %}
+
+{% block content %}
+<div class="container section pt-4">
+  <span class="eyebrow"><i class="fa-solid fa-user-shield"></i> Admin</span>
+  <h2 class="mt-2 mb-4">Manage Predictions</h2>
+
+  <div class="card-signal p-4">
+    <div class="table-responsive">
+      <table class="table table-signal align-middle mb-0">
+        <thead>
+          <tr><th>ID</th><th>User</th><th>Date</th><th>Credit Score</th><th>Loan Amount</th><th>Prediction</th><th>Probability</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for p in predictions %}
+          <tr>
+            <td class="mono">#{{ p.id }}</td>
+            <td>{{ p.user.full_name }}</td>
+            <td>{{ p.created_at.strftime('%b %d, %Y %H:%M') }}</td>
+            <td>{{ p.credit_score }}</td>
+            <td>{{ p.loan_amount | currency }}</td>
+            <td><span class="pill-status {{ 'high' if p.prediction_label == 'High Risk' else 'low' }}">{{ p.prediction_label }}</span></td>
+            <td>{{ (p.probability * 100) | round(1) }}%</td>
+            <td class="d-flex gap-2">
+              <a href="{{ url_for('main.result', prediction_id=p.id) }}" class="btn btn-outline-signal btn-sm">View</a>
+              <form method="POST" action="{{ url_for('admin.delete_prediction', prediction_id=p.id) }}" onsubmit="return confirm('Delete this prediction record?');">
+                <button type="submit" class="btn btn-danger-soft btn-sm">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

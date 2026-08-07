@@ -1,0 +1,21 @@
+{
+  "accuracy": 67.4,
+  "precision": 21.88,
+  "recall": 70.31,
+  "f1_score": 33.37,
+  "roc_auc": 74.98,
+  "confusion_matrix": [
+    [
+      30251,
+      14888
+    ],
+    [
+      1761,
+      4170
+    ]
+  ],
+  "train_rows": 204277,
+  "test_rows": 51070,
+  "default_rate_pct": 11.61,
+  "algorithm": "Logistic Regression (class_weight=balanced)"
+}

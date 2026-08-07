@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Create Account — LoanAI{% endblock %}
+
+{% block content %}
+<div class="container auth-shell">
+  <div class="card-signal auth-card animate-in">
+    <div class="text-center mb-4">
+      <span class="brand-mark d-inline-flex mb-2" style="width:48px;height:48px;border-radius:14px;"><i class="fa-solid fa-chart-line"></i></span>
+      <h3 class="mb-1">Create your account</h3>
+      <p class="text-muted-token small">Start scoring loan applicants in minutes.</p>
+    </div>
+    <form method="POST" class="form-signal" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        {{ form.full_name.label }}
+        {{ form.full_name(class="form-control" + (" is-invalid" if form.full_name.errors else ""), placeholder="Jane Doe") }}
+        {% for error in form.full_name.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="mb-3">
+        {{ form.email.label }}
+        {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="you@example.com") }}
+        {% for error in form.email.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="mb-3">
+        {{ form.password.label }}
+        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="At least 8 characters") }}
+        {% for error in form.password.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="mb-4">
+        {{ form.confirm_password.label }}
+        {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else ""), placeholder="Repeat password") }}
+        {% for error in form.confirm_password.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+      </div>
+      {{ form.submit(class="btn btn-signal w-100") }}
+    </form>
+    <p class="text-center small text-muted-token mt-4 mb-0">
+      Already have an account? <a href="{{ url_for('auth.login') }}" style="color: var(--signal-blue); font-weight:600;">Log in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Prediction History — LoanAI{% endblock %}
+
+{% block content %}
+<div class="container section pt-4">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+      <span class="eyebrow">History</span>
+      <h2 class="mt-2 mb-0">Prediction History</h2>
+    </div>
+    <a href="{{ url_for('main.export_history_csv') }}" class="btn btn-outline-signal"><i class="fa-solid fa-file-csv me-2"></i>Export CSV</a>
+  </div>
+
+  <div class="card-signal p-4">
+    {% if pagination.items %}
+    <div class="table-responsive">
+      <table class="table table-signal align-middle mb-0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Age</th>
+            <th>Income</th>
+            <th>Credit Score</th>
+            <th>Loan Amount</th>
+            <th>Prediction</th>
+            <th>Probability</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in pagination.items %}
+          <tr>
+            <td class="mono">#{{ p.id }}</td>
+            <td>{{ p.created_at.strftime('%b %d, %Y %H:%M') }}</td>
+            <td>{{ p.age }}</td>
+            <td>{{ p.income | currency }}</td>
+            <td>{{ p.credit_score }}</td>
+            <td>{{ p.loan_amount | currency }}</td>
+            <td><span class="pill-status {{ 'high' if p.prediction_label == 'High Risk' else 'low' }}">{{ p.prediction_label }}</span></td>
+            <td>{{ (p.probability * 100) | round(1) }}%</td>
+            <td><a href="{{ url_for('main.result', prediction_id=p.id) }}" class="small">View</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if pagination.pages > 1 %}
+    <nav class="mt-4 d-flex justify-content-center">
+      <ul class="pagination">
+        <li class="page-item {{ 'disabled' if not pagination.has_prev }}">
+          <a class="page-link" href="{{ url_for('main.history', page=pagination.prev_num) if pagination.has_prev else '#' }}">Previous</a>
+        </li>
+        {% for page_num in pagination.iter_pages() %}
+          {% if page_num %}
+            <li class="page-item {{ 'active' if page_num == pagination.page }}">
+              <a class="page-link" href="{{ url_for('main.history', page=page_num) }}">{{ page_num }}</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">…</span></li>
+          {% endif %}
+        {% endfor %}
+        <li class="page-item {{ 'disabled' if not pagination.has_next }}">
+          <a class="page-link" href="{{ url_for('main.history', page=pagination.next_num) if pagination.has_next else '#' }}">Next</a>
+        </li>
+      </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-5">
+      <i class="fa-solid fa-clock-rotate-left fa-2x mb-3 text-muted-token"></i>
+      <p class="text-muted-token mb-3">You haven't made any predictions yet.</p>
+      <a href="{{ url_for('main.predict') }}" class="btn btn-signal btn-sm">Make your first prediction</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
