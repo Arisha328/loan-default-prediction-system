@@ -24,12 +24,19 @@ def register():
 
     form = RegisterForm()
     if form.validate_on_submit():
-        existing = User.query.filter_by(email=form.email.data.lower().strip()).first()
+        email_input = form.email.data.lower().strip()
+
+        # Sirf official @gmail.com check
+        if not email_input.endswith("@gmail.com"):
+            flash("Please enter a valid official @gmail.com email address.", "danger")
+            return render_template("register.html", form=form)
+
+        existing = User.query.filter_by(email=email_input).first()
         if existing:
             flash("An account with that email already exists. Please log in instead.", "warning")
             return redirect(url_for("auth.login"))
 
-        user = User(full_name=form.full_name.data.strip(), email=form.email.data.lower().strip())
+        user = User(full_name=form.full_name.data.strip(), email=email_input)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
