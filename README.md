@@ -1,8 +1,9 @@
 # AI Loan Default Prediction System
 
+🚀 **Live Web App:** [Loan AI Web Application](https://arisha13.pythonanywhere.com/)
 A full-stack, production-ready web application that predicts loan default risk
 using a machine learning model trained on real historical loan data. Built with
-Flask, SQLAlchemy, and a Logistic Regression classifier, with a modern
+Flask, SQL Alchemy, and a Logistic Regression classifier, with a modern
 fintech-styled Bootstrap 5 front end.
 
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
